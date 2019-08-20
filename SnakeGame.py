@@ -7,12 +7,14 @@ pygame.init()
     # settings
 displayWidth = 800
 displayHeight = 600
-fps=30
+fps=60
     #starting position snake
 x = (displayWidth*0.45)
 x_right = 0
 x_left = 0
 y = (displayHeight *0.8)
+y_up = 0
+y_down = 0
 
     #colour definition
 black = (0,0,0)
@@ -54,16 +56,34 @@ while not crashed:
             crashed=True
         #if a button is pressed
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT: #when arrow left is pressed
-                x_left = -5
+            if event.key == pygame.K_RIGHT: #when arrow left is pressed
+                x_left = 5
                 x_right = 0
-
-            if event.key == pygame.K_RIGHT: #when arrow right is pressed
-                x_right = 5
+                y_up = 0
+                y_down = 0
+            if event.key == pygame.K_LEFT: #when arrow right is pressed
+                x_right = -5
                 x_left = 0
+                y_up = 0
+                y_down = 0
+            if event.key == pygame.K_DOWN: #when arrow right is pressed
+                y_up = 5
+                y_down = 0
+                x_right = 0
+                x_left = 0
+            if event.key == pygame.K_UP: #when arrow right is pressed
+                y_up = 0
+                y_down = -5
+                x_right = 0
+                x_left = 0
+
+
+            
             # x will adjust to event
             x = x + x_right + x_left
-
+            y = y + y_up + y_down
+        x=x
+        y=y
 
         #if button is released
         #if event.type == pygame.KEYUP:

@@ -7,10 +7,11 @@ pygame.init()
     # settings
 displayWidth = 800
 displayHeight = 600
-fps=100
+fps=30
     #starting position snake
 x = (displayWidth*0.45)
-x_change = 0
+x_right = 0
+x_left = 0
 y = (displayHeight *0.8)
 
     #colour definition
@@ -54,9 +55,22 @@ while not crashed:
         #if a button is pressed
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT: #when arrow left is pressed
-                x_change=-5
-            
-        
+                x_left = -5
+                x_right = 0
+
+            if event.key == pygame.K_RIGHT: #when arrow right is pressed
+                x_right = 5
+                x_left = 0
+            # x will adjust to event
+            x = x + x_right + x_left
+
+
+        #if button is released
+        #if event.type == pygame.KEYUP:
+        #    if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT: #when arrow left is pressed
+        #        x_change = 0
+
+
 
         gameDisplay.fill(white) # set background > DOES ALL SO AFTER THIS THE REST
         car(x,y) #> blits car

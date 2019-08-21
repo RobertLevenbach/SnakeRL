@@ -1,4 +1,6 @@
 import pygame
+import time
+import random
 
 ## initiliaze all modules of pygame (import) > NEEDED
 pygame.init()
@@ -8,9 +10,12 @@ pygame.init()
 display_width = 640
 display_height = 640
 fps=60
-stepsize = 40
-car_width= 64
-car_height= 64
+stepsize = 16
+car_width= 16
+car_height= 16
+thingw=16
+thingh=16
+speed = 4
 
 
     #colour definition
@@ -40,76 +45,125 @@ def car(x,y):
     # y starts top, gets more when go down, x starts left goes right more
     gameDisplay.blit(snakeImg,(x,y))
 
+def things(thingx, thingy, thingw, thingh, color):
+    pygame.draw.rect(gameDisplay, color, [thingx, thingy, thingw, thingh])
+
+def crash():
+    message_display('You died')
+
+def message_display(text):
+    largeText = pygame.font.Font('freesansbold.ttf',115) #font and size as parameters
+    TextSurf, TextRect = text_objects(text, largeText)  #returns text surface and text rectangle 
+    TextRect.center = (display_width/2,display_height/2) #center text rectangle
+    gameDisplay.blit(TextSurf, TextRect)
+
+    pygame.display.update() #update message to display
+    
+    time.sleep(2) #wait 2 seconds
+
+    game_loop() #restart game loop
+
+def text_objects(text, font):
+    textSurface = font.render(text, True, red) #True= anti-analisian
+    return textSurface, textSurface.get_rect()
+    
+    
 def game_loop():
     ##set game loop > stops when quit or when snake crashes (wall)
     gameExit = False #start it is not crashed
         #starting position snake
     x = (display_width*0.45)
-    x_right = 0
-    x_left = 0
+    x_right = False
+    x_left = False
     y = (display_height *0.8)
-    y_up = 0
-    y_down = 0
+    y_up = False
+    y_down = False
+
+    thing_startx= random.randrange(0, display_width)
+    thing_starty= random.randrange(0, display_height)
+
+    
 
     while not gameExit:
-        #start loop with event handling> all input happens in here!
+        #start loop with event handling> all input happens in here! 
         for event in pygame.event.get(): #gets every event (mouse movement, button movement> makes list per frame)
             #crash event> here when user does quit button
             if event.type == pygame.QUIT:
-                gameExit=True
+                pygame.quit()
+                quit()
             #if a button is pressed
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RIGHT: #when arrow left is pressed
-                    x_left = stepsize
+                    x_left = True
                     x_right = 0
                     y_up = 0
                     y_down = 0
                 if event.key == pygame.K_LEFT: #when arrow right is pressed
-                    x_right = -stepsize
+                    x_right = True
                     x_left = 0
                     y_up = 0
                     y_down = 0
                 if event.key == pygame.K_DOWN: #when arrow right is pressed
-                    y_up = stepsize
+                    y_up = True
                     y_down = 0
                     x_right = 0
                     x_left = 0
                 if event.key == pygame.K_UP: #when arrow right is pressed
                     y_up = 0
-                    y_down = -stepsize
+                    y_down = True
                     x_right = 0
                     x_left = 0
 
 
                 
                 # x will adjust to event
-                x = x + x_right + x_left
-                y = y + y_up + y_down
-
+                #x = x + x_right + x_left
+                #y = y + y_up + y_down
+            
 
             #if button is released
             #if event.type == pygame.KEYUP:
             #    if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT: #when arrow left is pressed
             #        x_change = 0
+            
+        gameDisplay.fill(white) # set background > DOES ALL SO AFTER THIS THE REST
+        car(x,y) #> blits car
+        things(thing_startx, thing_starty, thingw, thingh, blue)
 
-
-
-            gameDisplay.fill(white) # set background > DOES ALL SO AFTER THIS THE REST
-            car(x,y) #> blits car
-
-            ##questionaire > check states (e.g. crashes with wall)
-            if x > display_width - car_width or x < 0 :
-                gameExit= True
-            if y > display_height - car_height or y < 0 :
-                gameExit= True
+        ##questionaire > check states (e.g. crashes with wall)
+            #crash
+        if x > display_width - car_width or x < 0 :
+            crash()
+        if y > display_height - car_height or y < 0 :
+            crash()
+            #apple thing
+        if x == thing_startx and y == thing_starty:
+            thing_startx= random.randrange(0, display_width)
+            thing_starty= random.randrange(0, display_height)
+            things(thing_startx, thing_starty, thingw, thingh, blue)
+            #movement
+        if x_left== True:
+            x=x+speed
+            y=y
+        if x_right== True:
+            x=x-speed
+            y=y
+        if y_up==True:
+            y=y+speed
+            x=x
+        if y_down==True:
+            y=y-speed
+            x=x
+            
 
             ##print the events to console
             #print(event)
 
         #update display (we made everything above, now display it)> no parameters updates everything
-            pygame.display.update()
+        pygame.display.update()
 
-            clock.tick(fps)
+        clock.tick(fps)
+
 
 
 game_loop()

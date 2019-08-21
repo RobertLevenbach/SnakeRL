@@ -41,7 +41,13 @@ pygame.display.set_caption('Snakarel')
 
 ## functions
 
-def drawScreen(x,y,thing_startx,thing_starty):
+def scoreTrack(count):
+    font = pygame.font.SysFont(None, 25)
+    text = font.render("Score: "+ str(count),True, black)
+    gameDisplay.blit(text, (0,0))
+
+
+def drawScreen(x,y,thing_startx,thing_starty,score):
     gameDisplay.fill(white) # set background > DOES ALL SO AFTER THIS THE REST
         # top line
     pygame.draw.rect(gameDisplay, red, [0,0,display_width,border_width])
@@ -53,9 +59,10 @@ def drawScreen(x,y,thing_startx,thing_starty):
     pygame.draw.rect(gameDisplay, red, [display_width-border_width,0,border_width, display_height+border_width])
 
     car(x,y) #> blits car
-    things(thing_startx, thing_starty, thingw, thingh, blue) #> Blits
+    things(thing_startx, thing_starty, thingw, thingh, blue) #> Blits apple
+    scoreTrack(score)
 
-    
+
 def car(x,y):
     #blit draws stuff to background
     # x,y is where you will blit the image
@@ -64,6 +71,7 @@ def car(x,y):
 
 def things(thingx, thingy, thingw, thingh, color):
     pygame.draw.rect(gameDisplay, color, [thingx, thingy, thingw, thingh])
+
 
 def crash():
     message_display('You died')
@@ -95,13 +103,12 @@ def game_loop():
     y = (display_height *0.8)
     y_up = False
     y_down = False
+    score=0
+    speedlocal=speed
 
-    thing_startx= random.randrange(0, display_width, car_width)
-    thing_starty= random.randrange(0, display_height, car_width)
-
-
-
-    
+    thing_startx= random.randrange(border_width, display_width-border_width, car_width)   
+    thing_starty= random.randrange(border_width, display_height-border_width, car_width)
+   
     
 
     while not gameExit:
@@ -113,22 +120,22 @@ def game_loop():
                 quit()
             #if a button is pressed
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RIGHT: #when arrow left is pressed
+                if event.key == pygame.K_RIGHT and x_right == False: #when arrow left is pressed
                     x_left = True
                     x_right = 0
                     y_up = 0
                     y_down = 0
-                if event.key == pygame.K_LEFT: #when arrow right is pressed
+                if event.key == pygame.K_LEFT and x_left == False: #when arrow right is pressed
                     x_right = True
                     x_left = 0
                     y_up = 0
                     y_down = 0
-                if event.key == pygame.K_DOWN: #when arrow right is pressed
+                if event.key == pygame.K_DOWN and y_down == False: #when arrow right is pressed
                     y_up = True
                     y_down = 0
                     x_right = 0
                     x_left = 0
-                if event.key == pygame.K_UP: #when arrow right is pressed
+                if event.key == pygame.K_UP and y_up == False: #when arrow right is pressed
                     y_up = 0
                     y_down = True
                     x_right = 0
@@ -147,8 +154,7 @@ def game_loop():
             #        x_change = 0
 
 
-
-        drawScreen(x,y,thing_startx,thing_starty)
+        drawScreen(x,y,thing_startx,thing_starty,score)
 
         ##questionaire > check states (e.g. crashes with wall)
             #crash
@@ -156,26 +162,32 @@ def game_loop():
             crash()
         if y > display_height - car_height - border_width or y < 0 +border_width :
             crash()
+            
             #apple thing
         if x == thing_startx and y == thing_starty:
-            thing_startx= random.randrange(0, display_width,stepsize)
-            thing_starty= random.randrange(0, display_height,stepsize)
+            thing_startx= random.randrange(border_width, display_width-border_width, car_width)   
+            thing_starty= random.randrange(border_width, display_width-border_width, car_width)   
             things(thing_startx, thing_starty, thingw, thingh, blue)
+
+            score+=1
+
+
             #movement
         if x_left== True:
-            x=x+speed*car_width
+            x=x+speedlocal*car_width
             y=y
         if x_right== True:
-            x=x-speed*car_width
+            x=x-speedlocal*car_width
             y=y
         if y_up==True:
-            y=y+speed*car_width
+            y=y+speedlocal*car_width
             x=x
         if y_down==True:
-            y=y-speed*car_width
+            y=y-speedlocal*car_width
             x=x
             
-
+        drawScreen(x,y,thing_startx,thing_starty, score)
+        
             ##print the events to console
             #print(event)
 

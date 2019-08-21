@@ -9,13 +9,13 @@ pygame.init()
     # settings
 display_width = 640
 display_height = 640
-fps=60
-stepsize = 16
+fps=15
 car_width= 16
 car_height= 16
-thingw=16
-thingh=16
-speed = 4
+thingw=car_width
+thingh=car_width
+speed = 1
+stepsize=car_width
 
 
     #colour definition
@@ -72,15 +72,15 @@ def game_loop():
     ##set game loop > stops when quit or when snake crashes (wall)
     gameExit = False #start it is not crashed
         #starting position snake
-    x = (display_width*0.45)
+    x = (display_width*0.4)
     x_right = False
     x_left = False
     y = (display_height *0.8)
     y_up = False
     y_down = False
 
-    thing_startx= random.randrange(0, display_width)
-    thing_starty= random.randrange(0, display_height)
+    thing_startx= random.randrange(0, display_width, car_width)
+    thing_starty= random.randrange(0, display_height, car_width)
 
     
 
@@ -138,21 +138,21 @@ def game_loop():
             crash()
             #apple thing
         if x == thing_startx and y == thing_starty:
-            thing_startx= random.randrange(0, display_width)
-            thing_starty= random.randrange(0, display_height)
+            thing_startx= random.randrange(0, display_width,stepsize)
+            thing_starty= random.randrange(0, display_height,stepsize)
             things(thing_startx, thing_starty, thingw, thingh, blue)
             #movement
         if x_left== True:
-            x=x+speed
+            x=x+speed*car_width
             y=y
         if x_right== True:
-            x=x-speed
+            x=x-speed*car_width
             y=y
         if y_up==True:
-            y=y+speed
+            y=y+speed*car_width
             x=x
         if y_down==True:
-            y=y-speed
+            y=y-speed*car_width
             x=x
             
 

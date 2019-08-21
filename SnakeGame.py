@@ -9,6 +9,7 @@ pygame.init()
     # settings
 display_width = 640
 display_height = 640
+border_width=16
 fps=15
 car_width= 16
 car_height= 16
@@ -39,6 +40,22 @@ gameDisplay = pygame.display.set_mode((display_width, display_height))
 pygame.display.set_caption('Snakarel')
 
 ## functions
+
+def drawScreen(x,y,thing_startx,thing_starty):
+    gameDisplay.fill(white) # set background > DOES ALL SO AFTER THIS THE REST
+        # top line
+    pygame.draw.rect(gameDisplay, red, [0,0,display_width,border_width])
+        # bottom line
+    pygame.draw.rect(gameDisplay, red, [0,display_height -border_width,display_width,border_width])
+        # left line
+    pygame.draw.rect(gameDisplay, red, [0,0,border_width, display_height])
+        # right line
+    pygame.draw.rect(gameDisplay, red, [display_width-border_width,0,border_width, display_height+border_width])
+
+    car(x,y) #> blits car
+    things(thing_startx, thing_starty, thingw, thingh, blue) #> Blits
+
+    
 def car(x,y):
     #blit draws stuff to background
     # x,y is where you will blit the image
@@ -82,6 +99,9 @@ def game_loop():
     thing_startx= random.randrange(0, display_width, car_width)
     thing_starty= random.randrange(0, display_height, car_width)
 
+
+
+    
     
 
     while not gameExit:
@@ -125,16 +145,16 @@ def game_loop():
             #if event.type == pygame.KEYUP:
             #    if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT: #when arrow left is pressed
             #        x_change = 0
-            
-        gameDisplay.fill(white) # set background > DOES ALL SO AFTER THIS THE REST
-        car(x,y) #> blits car
-        things(thing_startx, thing_starty, thingw, thingh, blue)
+
+
+
+        drawScreen(x,y,thing_startx,thing_starty)
 
         ##questionaire > check states (e.g. crashes with wall)
             #crash
-        if x > display_width - car_width or x < 0 :
+        if x > display_width - car_width -border_width or x < 0 + border_width :
             crash()
-        if y > display_height - car_height or y < 0 :
+        if y > display_height - car_height - border_width or y < 0 +border_width :
             crash()
             #apple thing
         if x == thing_startx and y == thing_starty:
